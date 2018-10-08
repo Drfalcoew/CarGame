@@ -10,6 +10,7 @@ namespace CarGame
 {
     public partial class GameViewController : UIViewController {
 
+        // Initializing objects
         SCNView gameView;
         SCNScene gameScene;
         SCNNode cameraNode;
@@ -96,7 +97,7 @@ namespace CarGame
         public void CreateUser() {
             userShape = SCNBox.Create(35.0f, 20.0f, 75.0f, 10.0f);
             user = SCNNode.FromGeometry(userShape);
-            user.Position = new SCNVector3(floorNode.Geometry., 25, 0);
+            user.Position = new SCNVector3(floorNode.Geometry., 25, 0);  // trying to create a car onto the top left position of the screen
         }
 
         public override void ViewDidLoad(){
