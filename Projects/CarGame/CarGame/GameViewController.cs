@@ -32,7 +32,6 @@ namespace CarGame
 
         public void InitView() {
             gameView = View as SCNView;
-            gameView.AllowsCameraControl = false;
             gameView.AutoenablesDefaultLighting = true;
         }
 
@@ -42,9 +41,9 @@ namespace CarGame
             gameView.Playing = true;
         }
 
-        public void InitCamera(){
-
-
+        public void InitCamera(){ // setting up camera
+                                    
+            gameView.AllowsCameraControl = true;
             float pi = (float)Math.PI;
             cameraNode = new SCNNode();
             cameraNode.Camera = new SCNCamera();
@@ -57,14 +56,16 @@ namespace CarGame
 
         public void CreateTrees(){
 
-            tree = SCNPyramid.Create(10, 22, 10);
+            tree = SCNPyramid.Create(23, 60, 23);
             treeNode = SCNNode.FromGeometry(tree);
-            treeNode.Position = new SCNVector3(0, 5.0f, 0);
+            treeNode.Position = new SCNVector3(0, 10.0f, 0);
+            treeNode.CastsShadow = true;
             gameScene.RootNode.AddChildNode(treeNode);
 
         }
 
         public void CreateLight(){
+            float pi = (float)Math.PI;
             var light = SCNLight.Create();
             var lightNode = SCNNode.Create();
 
@@ -73,6 +74,18 @@ namespace CarGame
             lightNode.Light = light;
             lightNode.Position = new SCNVector3(-40, 40, 60);
             gameScene.RootNode.AddChildNode(lightNode);
+
+            var directionLight = SCNNode.Create();
+            directionLight.Light = SCNLight.Create();
+            directionLight.Light.CastsShadow = true;
+            directionLight.Light.ShadowMode = SCNShadowMode.Deferred;
+            directionLight.Light.CategoryBitMask = (System.nuint)(-1);
+            directionLight.Light.AutomaticallyAdjustsShadowProjection = true;
+            directionLight.Light.MaximumShadowDistance = 50;
+            directionLight.Position = new SCNVector3(-40, 40, 60);
+            directionLight.Rotation = new SCNVector4(x: -1, y: 0, z: 0, w: pi / 2);
+            gameScene.RootNode.AddChildNode(directionLight);
+      
         }
 
         public void CreateFloor() {
@@ -84,7 +97,7 @@ namespace CarGame
             floor.Width = 200;
             floor.Length = 200;
             floor.FirstMaterial = floorMaterial;
-
+            floor.Reflectivity = 0;
             floorNode = SCNNode.FromGeometry(floor);
             floorNode.Geometry.FirstMaterial.Diffuse.WrapS = SCNWrapMode.Repeat;
             floorNode.Geometry.FirstMaterial.Diffuse.WrapT = SCNWrapMode.Repeat;
@@ -95,9 +108,10 @@ namespace CarGame
 
 
         public void CreateUser() {
-            userShape = SCNBox.Create(35.0f, 20.0f, 75.0f, 10.0f);
+            userShape = SCNBox.Create(8.0f, 7.0f, 15.0f, 0.005f);
             user = SCNNode.FromGeometry(userShape);
-            user.Position = new SCNVector3(floorNode.Geometry., 25, 0);  // trying to create a car onto the top left position of the screen
+            user.Position = new SCNVector3(10, 4, -50);  // trying to create a car onto the top left position of the screen ||  coords are: (down/up floor, in/out floor, left/right floor)
+            gameScene.RootNode.AddChildNode(user);
         }
 
         public override void ViewDidLoad(){
